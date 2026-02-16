@@ -18,11 +18,23 @@ try {
 $mail = new Mail($pdo);
 $page = new Page();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+// Determining request method 
+$method = $_SERVER['REQUEST_METHOD'];
+
+//POST, Creating a new mail
+if ($method === 'POST') {
     $json = file_get_contents("php://input");
     $data = json_decode($json, true);
 
-    $page->item($mail->createMail($data['subject'], $data['body']));
+    // Validation to avoid index errors
+    if (!is_array($data) || empty($data['subject']) || empty($data['body'])) {
+        $page->badRequest();
+        exit;
+    }
+
+    $id=$mail->createMail($data['subject'], $data['body']);
+    //respond with json
+    $page -> item(["id" => $id]);
     exit;
 }
 
