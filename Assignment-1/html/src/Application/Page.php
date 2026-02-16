@@ -2,6 +2,10 @@
 namespace Application;
 
 class Page {
+    // Setting response type to JSON 
+    private function jsonHeader(): void {
+        header('Content-Type: application/json; charset=utf-8');
+    }
     public function list($items) {
         http_response_code(200);
         echo json_encode($items);
